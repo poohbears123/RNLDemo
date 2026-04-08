@@ -4,6 +4,7 @@ import AppLayout from "../layout/AppLayout";
 import FloatingLabelInput from "../components/input/FloatingLabelInput";
 import FloatingLabelSelect from "../components/Select/FloatingLabelSelect";
 import { Table, TableHeader, TableBody, TableRow, TableHeadCell, TableCell, sampleUsersData } from "../components/Table";
+import GenderPage from "../pages/GenderPage";
 
 const SampleComponent = () => {
     const [firstName, setFirstName] = useState("john");
@@ -145,7 +146,7 @@ const AppRoutes = () => {
     return (
         <Routes>
             <Route element={<AppLayout />}>
-                <Route path="/" element={<SampleComponent />} />
+                <Route path="/" element={<GenderPage />} />
             </Route>
         </Routes>
     );
