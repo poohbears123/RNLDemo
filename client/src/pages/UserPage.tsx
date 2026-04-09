@@ -19,8 +19,8 @@ interface User {
   lastName: string;
   suffix: string;
   name: string;
-  genderId: number;
-  gender: string;
+  gender_id: number;
+  gender: Gender | null;
   address: string;
   dob: string;
   username: string;
@@ -110,7 +110,7 @@ const UserPage = () => {
       middleName: user.middleName || '',
       lastName: user.lastName,
       suffix: user.suffix || '',
-      genderId: user.genderId,
+      genderId: user.gender_id || 0,
       dob: user.dob || '',
       username: user.username,
       password: '',
@@ -134,7 +134,6 @@ const UserPage = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.stopPropagation();
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name as keyof FormData]: value }));
   };
@@ -166,8 +165,16 @@ const UserPage = () => {
       }
       closeModal();
       fetchUsers();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Failed to save user');
+    } catch (err: any) {
+      const error = err.response?.data;
+      if (error?.message) {
+        alert(error.message);
+      } else if (error?.errors) {
+        const msgs = Object.values(error.errors as Record<string, string[]>).flat().join('\\n');
+        alert(`Validation failed:\\n${msgs}`);
+      } else {
+        alert('Failed to save user');
+      }
     }
   };
 
@@ -177,8 +184,9 @@ const UserPage = () => {
         await axios.delete(`${API_USERS}/${deleteConfirmId}`);
         closeModal();
         fetchUsers();
-      } catch (error) {
-        alert('Failed to delete user');
+      } catch (err: any) {
+        const error = err.response?.data || err.message;
+        alert(`Failed to delete user: ${typeof error === 'string' ? error : 'Unknown error'}`);
       }
     }
   };
@@ -257,7 +265,7 @@ const UserPage = () => {
                   <TableCell>{user.lastName}</TableCell>
                   <TableCell>{user.suffix}</TableCell>
                   <TableCell className="font-semibold">{user.name}</TableCell>
-                  <TableCell>{genders.find(g => g.id === user.genderId)?.name || user.gender}</TableCell>
+                  <TableCell>{user.gender ? user.gender.name : 'Unknown'}</TableCell>
                   <TableCell>{user.address}</TableCell>
                   <TableCell className="text-right space-x-2">
                     <button
@@ -347,8 +355,8 @@ const UserPage = () => {
               onChange={handleInputChange}
             />
             <FloatingLabelInput
-              label="Username *"
-              type="text"
+              label="Gmail *"
+              type="email"
               name="username"
               value={formData.username}
               onChange={handleInputChange}
@@ -494,4 +502,3 @@ const UserPage = () => {
 };
 
 export default UserPage;
-

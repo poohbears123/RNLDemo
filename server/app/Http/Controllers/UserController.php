@@ -34,7 +34,11 @@ class UserController extends Controller
             'address' => 'nullable|string',
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+$validated['password'] = Hash::make($validated['password']);
+        $validated['email'] = $validated['username'];
+        $validated['gender_id'] = $validated['genderId'];
+        $validated['name'] = trim($validated['firstName'] . ' ' . ($validated['middleName'] ? $validated['middleName'] . ' ' : '') . $validated['lastName'] . ($validated['suffix'] ? ' ' . $validated['suffix'] : ''));
+        unset($validated['genderId']);
 
         $user = User::create($validated);
 
@@ -70,6 +74,11 @@ class UserController extends Controller
         if (isset($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         }
+
+        $validated['email'] = $validated['username'];
+        $validated['gender_id'] = $validated['genderId'];
+        $validated['name'] = trim($validated['firstName'] . ' ' . ($validated['middleName'] ? $validated['middleName'] . ' ' : '') . $validated['lastName'] . ($validated['suffix'] ? ' ' . $validated['suffix'] : ''));
+        unset($validated['genderId']);
 
         $user->update($validated);
 

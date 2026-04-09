@@ -1,17 +1,30 @@
-# CRUD Fix Plan - Tracking Progress
+# Fix 422 Error on User Creation
 
-## Steps:
-- [x] 1. Add localStorage persistence to GenderPage.tsx
-- [x] 2. cd client && npm install axios
-- [x] 3. Create server/routes/api.php with API routes
-- [x] 4. Create server/app/Http/Controllers/GenderController.php (CRUD)
-- [x] 5. Create server/app/Http/Controllers/UserController.php (CRUD)
-- [x] 6. Update server/app/Models/User.php (fields, relationship)
-- [x] 7. Update client/src/pages/GenderPage.tsx for API calls
-- [x] 8. Update client/src/pages/UserPage.tsx for API calls (fetch genders)
-- [x] 9. cd server && php artisan migrate (genders table)
-Added migration for users custom fields too.
-- [ ] 10. Test full CRUD persistence across refreshes
+## Plan Steps (Approved by User)
 
-**Next step: 1**
+**✅ Step 1: Seed sample genders via active tinker terminal**
+```
+>>> App\Models\Gender::create(['name' => 'Male', 'status' => 'active']);
+>>> App\Models\Gender::create(['name' => 'Female', 'status' => 'active']);
+>>> App\Models\Gender::all();  // Verify 2 records
+>>> exit
+```
+*Fixes 'exists:genders,id' validation failure*
+
+**⏳ Step 2: Edit server/app/Http/Controllers/UserController.php**
+- Map frontend `genderId` → backend `gender_id` in store() and update().
+- Handles mass assignment to DB column.
+
+**⏳ Step 3: Improve error handling in client/src/pages/UserPage.tsx**
+- Parse Laravel validation errors in axios catch.
+- Show specific messages (e.g. "The selected gender id is invalid").
+
+**⏳ Step 4: Test**
+- Reload frontend GenderPage to fetch genders.
+- Create user - should succeed.
+- Edit user too.
+
+**⏳ Step 5: [Complete]**
+
+*After each step, mark with ✅ and update file.*
 

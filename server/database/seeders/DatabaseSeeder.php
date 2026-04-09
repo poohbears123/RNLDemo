@@ -17,9 +17,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        \App\Models\Gender::create(['name' => 'Male']);
+        \App\Models\Gender::create(['name' => 'Female']);
+
+        for ($i = 0; $i < 5; $i++) {
+            User::factory()->create([
+                'firstName' => 'User' . $i,
+                'lastName' => 'Test' . $i,
+                'gender_id' => 1,
+                'username' => 'user_test_' . $i,
+            ]);
+        }
     }
 }

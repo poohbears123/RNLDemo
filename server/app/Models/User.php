@@ -28,10 +28,14 @@ class User extends Authenticatable
         'username',
         'status',
         'address',
+        'password',
         'name',
         'email',
-        'password',
+        'email_verified_at',
+        'remember_token',
     ];
+
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -60,6 +64,19 @@ class User extends Authenticatable
             'password' => 'hashed',
             'dob' => 'date',
         ];
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->name = trim($user->firstName . ' ' . ($user->middleName ? $user->middleName . ' ' : '') . $user->lastName . ($user->suffix ? ' ' . $user->suffix : ''));
+        });
+
+        static::updating(function ($user) {
+            $user->name = trim($user->firstName . ' ' . ($user->middleName ? $user->middleName . ' ' : '') . $user->lastName . ($user->suffix ? ' ' . $user->suffix : ''));
+        });
     }
 }
 

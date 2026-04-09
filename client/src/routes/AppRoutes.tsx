@@ -13,9 +13,9 @@ const SampleComponent = () => {
     const [birthDate, setBirthDate] = useState("");
     const [password, setPassword] = useState("");
     const [gender, setGender] = useState("");
-    // TODO: Sample form demo states (unused eslint ok)"
 
     const genders = [
+
         { value: "", text: "Select Gender" },
         { value: "1", text: "Male" },
         { value: "2", text: "Female" },
