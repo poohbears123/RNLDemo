@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Link } from "react-router-dom";
 import AppLayout from "../layout/AppLayout";
 import FloatingLabelInput from "../components/input/FloatingLabelInput";
 import FloatingLabelSelect from "../components/Select/FloatingLabelSelect";
-import { Table, TableHeader, TableBody, TableRow, TableHeadCell, TableCell, sampleUsersData } from "../components/Table";
+// sampleUsersData moved to mockData.ts
 import GenderPage from "../pages/GenderPage";
+import UserPage from "../pages/UserPage";
 
 const SampleComponent = () => {
     const [firstName, setFirstName] = useState("john");
@@ -12,7 +13,7 @@ const SampleComponent = () => {
     const [birthDate, setBirthDate] = useState("");
     const [password, setPassword] = useState("");
     const [gender, setGender] = useState("");
-    const [showEmpty, setShowEmpty] = useState(false);
+    // TODO: Sample form demo states (unused eslint ok)"
 
     const genders = [
         { value: "", text: "Select Gender" },
@@ -98,45 +99,17 @@ const SampleComponent = () => {
                 </div>
             </div>
 
-            {/* Users Table */}
+            {/* Users Link - Full CRUD at /users */}
             <div className="w-full">
-                <Table
-                    emptyText="No users found"
-                    className="shadow-xl ring-1 ring-gray-900/5 rounded-xl max-h-[70vh] overflow-hidden"
+                <Link
+                    to="/users"
+                    className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl hover:from-blue-700 hover:to-blue-800 transform hover:-translate-y-1 transition-all duration-300 group"
                 >
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeadCell className="w-20">ID</TableHeadCell>
-                            <TableHeadCell>Name</TableHeadCell>
-                            <TableHeadCell>Email</TableHeadCell>
-                            <TableHeadCell>Role</TableHeadCell>
-                            <TableHeadCell className="text-right">Status</TableHeadCell>
-                        </TableRow>
-                    </TableHeader>
-
-                    <TableBody>
-                        {showEmpty
-                            ? null
-                            : sampleUsersData.map((user) => (
-                                <TableRow key={user.id}>
-                                    <TableCell>{user.id}</TableCell>
-                                    <TableCell className="font-semibold">{user.name}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell className="capitalize">{user.role}</TableCell>
-                                    <TableCell className="text-right">
-                                        <span
-                                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.status === "Active"
-                                                ? "bg-green-100 text-green-800"
-                                                : "bg-red-100 text-red-800"
-                                                }`}
-                                        >
-                                            {user.status}
-                                        </span>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
+                    <svg className="w-5 h-5 mr-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    View Users - Full CRUD with Modals
+                </Link>
             </div>
         </div>
     );
@@ -147,6 +120,8 @@ const AppRoutes = () => {
         <Routes>
             <Route element={<AppLayout />}>
                 <Route path="/" element={<GenderPage />} />
+                <Route path="/users" element={<UserPage />} />
+                <Route path="/genders" element={<GenderPage />} />
             </Route>
         </Routes>
     );

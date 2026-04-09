@@ -1,49 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHeadCell, TableCell } from "../components/Table";
 
-
+interface Gender {
+  id: number;
+  name: string;
+  status: "active" | "inactive";
+}
 
 const GenderPage = () => {
-  const [genders, setGenders] = useState([
-    { id: 1, name: "Male", status: "active" },
-    { id: 2, name: "Female", status: "active" },
-    { id: 3, name: "Other", status: "inactive" }
-  ]);
+  const [genders, setGenders] = useState<Gender[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
-  const [newGender, setNewGender] = useState("");
+  const [newGender, setNewGender] = useState(""); 
 
-const addGender = () => {
+useEffect(() => {
+    const saved = localStorage.getItem('gendersData');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as Gender[];
+        setGenders(parsed);
+      } catch {
+        // invalid, use empty
+      }
+    } else {
+      // initial sample if no saved
+      const sample: Gender[] = [
+        { id: 1, name: "Male", status: "active" },
+        { id: 2, name: "Female", status: "active" },
+        { id: 3, name: "Other", status: "inactive" }
+      ];
+      setGenders(sample);
+      localStorage.setItem('gendersData', JSON.stringify(sample));
+    }
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('gendersData', JSON.stringify(genders));
+  }, [genders]);
+
+  const addGender = () => {
     if (newGender.trim()) {
       const maxId = Math.max(...genders.map(g => g.id), 0);
-      setGenders([...genders, { id: maxId + 1, name: newGender.trim(), status: "active" }]);
+      const newG: Gender = { id: maxId + 1, name: newGender.trim(), status: "active" as const };
+      setGenders([...genders, newG]);
       setNewGender("");
       setShowAdd(false);
     }
   };
 
-const deleteGender = (id) => {
+  const deleteGender = (id: number) => {
     if (confirm("Delete?")) {
       setGenders(genders.filter(g => g.id !== id));
     }
   };
 
-const toggleStatus = (id) => {
+  const toggleStatus = (id: number) => {
     setGenders(genders.map(g => g.id === id ? { ...g, status: g.status === "active" ? "inactive" : "active" } : g));
+  };
+
+  const editName = (id: number) => {
+    const gender = genders.find(g => g.id === id);
+    if (!gender) return;
+    const newName = prompt("Edit name:", gender.name);
+    if (newName !== null && newName.trim()) {
+      setGenders(genders.map(g => g.id === id ? {...g, name: newName.trim()} : g));
+    }
   };
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Genders</h1>
-        <button 
+<button 
           onClick={() => setShowAdd(true)}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition disabled:opacity-50"
+          disabled={!isLoaded}
         >
           + Add Gender
         </button>
       </div>
 
-      {showAdd && (
+      {showAdd && isLoaded && (
         <div className="mb-6 p-6 bg-white shadow-lg rounded-xl border">
           <div className="flex gap-3">
             <input
@@ -60,6 +98,11 @@ const toggleStatus = (id) => {
               Cancel
             </button>
           </div>
+        </div>
+      )}
+      {!isLoaded && (
+        <div className="mb-6 p-6 bg-white shadow-lg rounded-xl border text-center text-gray-500">
+          Loading...
         </div>
       )}
 
@@ -88,7 +131,6 @@ const toggleStatus = (id) => {
                   </span>
                 </TableCell>
                 <TableCell className="text-right space-x-2">
-
                   <button
                     onClick={() => toggleStatus(gender.id)}
                     className="p-1.5 text-green-600 hover:bg-green-100 rounded-lg transition"
@@ -99,12 +141,7 @@ const toggleStatus = (id) => {
                     </svg>
                   </button>
                   <button
-                    onClick={() => {
-                      const newName = prompt("Edit name:", gender.name);
-                      if (newName !== null && newName.trim()) {
-                        setGenders(genders.map(g => g.id === gender.id ? {...g, name: newName.trim()} : g));
-                      }
-                    }}
+                    onClick={() => editName(gender.id)}
                     className="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition"
                     title="Edit"
                   >
@@ -132,3 +169,4 @@ const toggleStatus = (id) => {
 };
 
 export default GenderPage;
+

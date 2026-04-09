@@ -75,10 +75,4 @@ const TableCell: FC<TableProps> = ({ children, className = "" }) => (
 /* ========= EXPORTS ========= */
 export { Table, TableHeader, TableBody, TableRow, TableHeadCell, TableCell };
 
-// Sample data for demos
-export const sampleUsersData = [
-    { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "Active" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User", status: "Inactive" },
-    { id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Moderator", status: "Active" },
-];
 

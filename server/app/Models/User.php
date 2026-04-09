@@ -19,6 +19,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'firstName',
+        'middleName',
+        'lastName',
+        'suffix',
+        'gender_id',
+        'dob',
+        'username',
+        'status',
+        'address',
         'name',
         'email',
         'password',
@@ -39,11 +48,18 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    public function gender()
+    {
+        return $this->belongsTo(\App\Models\Gender::class);
+    }
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'dob' => 'date',
         ];
     }
 }
+
